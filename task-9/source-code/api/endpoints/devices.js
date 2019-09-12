@@ -80,7 +80,7 @@ module.exports = app => {
 
 		device.updateOne({
 			_id: req.params.deviceId,
-		}, req.body, (err, res) => {
+		}, req.body, (err, doc) => {
 			if (handleError(err, res)) {
 				res.send({
 					status: 'success',

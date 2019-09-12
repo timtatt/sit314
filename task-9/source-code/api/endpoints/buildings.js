@@ -42,7 +42,7 @@ module.exports = app => {
 	app.put('/building/:buildingId', (req, res) => {
 		Building.updateOne({
 			_id: req.params.buildingId,
-		}, req.body, (err, res) => {
+		}, req.body, (err, doc) => {
 			if (handleError(err, res)) {
 				res.send({
 					status: 'success',

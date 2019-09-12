@@ -1,3 +1,4 @@
+const Room = require('./../models/room.js');
 const Floor = require('./../models/floor.js');
 
 const handleError = require('./../helpers/handle-error.js');
@@ -38,7 +39,7 @@ module.exports = app => {
 	app.put('/floor/:floorId', (req, res) => {
 		Floor.updateOne({
 			_id: req.params.floorId,
-		}, req.body, (err, res) => {
+		}, req.body, (err, doc) => {
 			if (handleError(err, res)) {
 				res.send({
 					status: 'success',
@@ -53,6 +54,19 @@ module.exports = app => {
 		}, err => {
 			if (handleError(err, res)) {
 				res.send({
+					status: 'success',
+				});
+			}
+		});
+	});
+
+	app.get('/floor/:floorId/rooms', (req, res) => {
+		Room.find({
+			floorId: req.params.floorId
+		}).exec((err, docs) => {
+			if (handleError(err, res)) {
+				res.send({
+					rooms: docs,
 					status: 'success',
 				});
 			}

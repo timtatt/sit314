@@ -18,6 +18,7 @@ module.exports = app => {
 		room.save(err => {
 			if (handleError(err, res)) {
 				res.send({
+					room: room,
 					status: 'success',
 				});
 			}
@@ -35,7 +36,7 @@ module.exports = app => {
 	app.put('/room/:roomId', (req, res) => {
 		Room.updateOne({
 			_id: req.params.roomId,
-		}, req.body, (err, res) => {
+		}, req.body, (err, doc) => {
 			if (handleError(err, res)) {
 				res.send({
 					status: 'success',

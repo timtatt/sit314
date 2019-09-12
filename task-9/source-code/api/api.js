@@ -18,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/sit314-project', {
 require('./endpoints/buildings.js')(app);
 require('./endpoints/floors.js')(app);
 require('./endpoints/devices.js')(app);
+require('./endpoints/rooms.js')(app);
 require('./endpoints/auth.js')(app);
 
 app.listen(port, () => {
