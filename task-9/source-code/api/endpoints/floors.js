@@ -6,7 +6,10 @@ module.exports = app => {
 	app.get('/floor', (req, res) => {
 		Floor.find().exec((err, docs) => {
 			if (handleError(err, res)) {
-				res.send(docs);
+				res.send({
+					floors: docs,
+					status: 'success',
+				});
 			}
 		});
 	});
@@ -17,6 +20,7 @@ module.exports = app => {
 		floor.save(err => {
 			if (handleError(err, res)) {
 				res.send({
+					floor: floor,
 					status: 'success',
 				});
 			}

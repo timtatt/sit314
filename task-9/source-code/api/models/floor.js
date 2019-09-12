@@ -5,5 +5,6 @@ module.exports = mongoose.model('Floor', new mongoose.Schema({
 	roomMapping: [Object],
 	buildingId: mongoose.Schema.Types.ObjectId,
 	name: String,
+	shortName: String,
 	floorNumber: String,
 }));

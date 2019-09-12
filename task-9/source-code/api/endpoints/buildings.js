@@ -68,7 +68,10 @@ module.exports = app => {
 			buildingId: req.params.buildingId
 		}).exec((err, docs) => {
 			if (handleError(err, res)) {
-				res.send(docs);
+				res.send({
+					floors: docs,
+					status: 'success',
+				});
 			}
 		});
 	});
