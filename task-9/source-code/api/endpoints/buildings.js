@@ -7,7 +7,10 @@ module.exports = app => {
 	app.get('/building', (req, res) => {
 		Building.find().exec((err, docs) => {
 			if (handleError(err, res)) {
-				res.send(docs);
+				res.send({
+					buildings: docs,
+					status: 'success',
+				});
 			}
 		});
 	});
@@ -18,6 +21,7 @@ module.exports = app => {
 		building.save(err => {
 			if (handleError(err, res)) {
 				res.send({
+					building: building,
 					status: 'success',
 				});
 			}
@@ -27,7 +31,10 @@ module.exports = app => {
 	app.get('/building/:buildingId', (req, res) => {
 		Building.findById(req.params.buildingId).exec((err, docs) => {
 			if (handleError(err, res)) {
-				res.send(docs);
+				res.send({
+					building: docs,
+					status: 'success',
+				});
 			}
 		});
 	});
