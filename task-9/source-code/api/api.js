@@ -3,18 +3,27 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const port = 3000;
+const fileUpload = require('express-fileupload');
 
 const mongoose = require('mongoose');
 
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use(fileUpload({
+	useTempFiles: true,
+	safeFileNames: true,
+	createParentPath: true,
+	preserveExtension: true,
+	tempFileDir: '/tmp/',
+}));
+
+app.use('/uploads', express.static(__dirname + '/uploads'));
+
 mongoose.connect('mongodb://localhost:27017/sit314-project', {
 	useNewUrlParser: true
 });
 
-// const Building = require('./models/building.js');
-// const {Light, Switch} = require('./models/devices.js');
 require('./endpoints/buildings.js')(app);
 require('./endpoints/floors.js')(app);
 require('./endpoints/devices.js')(app);

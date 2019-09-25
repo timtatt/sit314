@@ -1,5 +1,6 @@
 const Room = require('./../models/room.js');
 const Floor = require('./../models/floor.js');
+const fs = require('fs');
 
 const handleError = require('./../helpers/handle-error.js');
 
@@ -28,10 +29,39 @@ module.exports = app => {
 		});
 	});
 
+
 	app.get('/floor/:floorId', (req, res) => {
 		Floor.findById(req.params.floorId).exec((err, docs) => {
 			if (handleError(err, res)) {
 				res.send(docs);
+			}
+		});
+	});
+	
+	app.post('/floor/:floorId/floorplan', (req, res) => {
+		if (!req.files || Object.keys(req.files).length === 0) {
+			handleError("No files were uploaded", res);
+		}
+
+		let floorplan = req.files.floorplan;
+
+		// Create directory for floor
+		var floorplanUrl = `/uploads/${req.params.floorId}/${floorplan.name}`;
+		floorplan.mv(`.${floorplanUrl}`, err => {
+			if (handleError(err, res)) {
+				Floor.updateOne({
+					_id: req.params.floorId,
+				}, {
+					floorplanUrl: `http://localhost:3000${floorplanUrl}`,
+				}, (err, doc) => {
+					console.log(doc);
+					if (handleError(err, res)) {
+						res.send({
+							floorplanUrl: doc.floorplanUrl,
+							status: 'success',
+						});
+					}
+				});
 			}
 		});
 	});
