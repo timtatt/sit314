@@ -66,6 +66,8 @@ module.exports = app => {
 	app.get('/building/:buildingId/floors', (req, res) => {
 		Floor.find({
 			buildingId: req.params.buildingId
+		}).sort({
+			floorOrder: 'asc',
 		}).exec((err, docs) => {
 			if (handleError(err, res)) {
 				res.send({
@@ -73,6 +75,28 @@ module.exports = app => {
 					status: 'success',
 				});
 			}
+		});
+	});
+
+	app.post('/building/:buildingId/floors/reorder', (req, res) => {
+		var queries = [];
+		for (var floor of req.body) {
+			queries.push({
+				updateOne: {
+					filter: {
+						_id: floor._id,
+					}, 
+					update: {
+						floorOrder: floor.order,
+					}
+				}
+			});
+		}
+
+		Floor.bulkWrite(queries, doc => {
+			res.send({
+				status: 'success',
+			});
 		});
 	});
 };

@@ -6,7 +6,9 @@ const handleError = require('./../helpers/handle-error.js');
 
 module.exports = app => {
 	app.get('/floor', (req, res) => {
-		Floor.find().exec((err, docs) => {
+		Floor.find().sort({
+			floorOrder: 'asc',
+		}).exec((err, docs) => {
 			if (handleError(err, res)) {
 				res.send({
 					floors: docs,
@@ -61,6 +63,20 @@ module.exports = app => {
 							status: 'success',
 						});
 					}
+				});
+			}
+		});
+	});
+
+	app.post('/floor/:floorId/reorder', (req, res) => {
+		Floor.updateOne({
+			_id: req.params.floorId,
+		}, {
+			floorOrder: req.body.order,
+		}, (err, doc) => {
+			if (handleError(err, res)) {
+				res.send({
+					status: 'success',
 				});
 			}
 		});
