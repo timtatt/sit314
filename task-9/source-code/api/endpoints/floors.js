@@ -82,6 +82,28 @@ module.exports = app => {
 		});
 	});
 
+	app.post('/floor/:floorId/mapping', (req, res) => {
+		var queries = [];
+		for (var room of req.body) {
+			queries.push({
+				updateOne: {
+					filter: {
+						_id: room._id,
+					}, 
+					update: {
+						edges: room.edges,
+					}
+				}
+			});
+		}
+
+		Room.bulkWrite(queries, doc => {
+			res.send({
+				status: 'success',
+			});
+		});
+	});
+
 	app.put('/floor/:floorId', (req, res) => {
 		Floor.updateOne({
 			_id: req.params.floorId,
