@@ -5,7 +5,7 @@ function DeviceSchema(additional) {
 		modelNumber: String,
 		name: String,
 		room: mongoose.Schema.Types.ObjectId,
-		floorCoordinates: Object,
+		coords: Object,
 	});
 
 	if (additional) {
@@ -17,7 +17,7 @@ function DeviceSchema(additional) {
 
 
 const switchModel = mongoose.model('Switch', DeviceSchema({
-	lights: [mongoose.Schema.Types.ObjectId]
+	lightIds: [mongoose.Schema.Types.ObjectId]
 }));
 
 const lightModel = mongoose.model('Light', DeviceSchema({
