@@ -1,5 +1,6 @@
 const Room = require('./../models/room.js');
 const Floor = require('./../models/floor.js');
+const {Switch, Light} = require('./../models/devices.js');
 const fs = require('fs');
 
 const handleError = require('./../helpers/handle-error.js');
@@ -131,12 +132,49 @@ module.exports = app => {
 	app.get('/floor/:floorId/rooms', (req, res) => {
 		Room.find({
 			floorId: req.params.floorId
-		}).exec((err, docs) => {
+		}).lean().exec((err, docs) => {
 			if (handleError(err, res)) {
-				res.send({
-					rooms: docs,
-					status: 'success',
-				});
+				if (req.query.devices) {
+					var queries = [];
+					for (var room of docs) {
+						queries.push(Switch.find({
+							roomId: room._id,
+						}));
+
+						queries.push(Light.find({
+							roomId: room._id,
+						}));
+					}
+
+					Promise.all(queries).then(roomDevices => {
+						var deviceMapping = {};
+
+						for (var deviceIndex in roomDevices) {
+							var devices = roomDevices[deviceIndex];
+							var roomIndex = Math.floor(deviceIndex / 2);
+
+							if (!docs[roomIndex].devices) {
+								docs[roomIndex].devices = {
+									switches: devices
+								};
+							} else {
+								docs[roomIndex].devices.lights = devices;
+							}
+						}
+						
+						console.log('got devices');
+
+						res.send({
+							rooms: docs,
+							status: 'success',
+						});
+					});
+				} else {
+					res.send({
+						rooms: docs,
+						status: 'success',
+					});
+				}
 			}
 		});
 	});

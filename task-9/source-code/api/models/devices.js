@@ -4,7 +4,7 @@ function DeviceSchema(additional) {
 	var schema = new mongoose.Schema({
 		modelNumber: String,
 		name: String,
-		room: mongoose.Schema.Types.ObjectId,
+		roomId: mongoose.Schema.Types.ObjectId,
 		coords: Object,
 	});
 

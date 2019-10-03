@@ -25,9 +25,9 @@ module.exports = app => {
 				break;
 		}
 
-		device.find().exec((err, switches) => {
+		device.find().exec((err, devices) => {
 			if (handleError(err, res)) {
-				res.send(switches);
+				res.send(devices);
 			}
 		});
 	});
@@ -45,6 +45,7 @@ module.exports = app => {
 		device.save(err => {
 			if (handleError(err, res)) {
 				res.send({
+					device: device,
 					status: 'success',
 				});
 			}
