@@ -161,8 +161,6 @@ module.exports = app => {
 								docs[roomIndex].devices.lights = devices;
 							}
 						}
-						
-						console.log('got devices');
 
 						res.send({
 							rooms: docs,
