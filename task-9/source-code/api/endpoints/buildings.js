@@ -1,17 +1,30 @@
 const Building = require('./../models/building.js');
 const Floor = require('./../models/floor.js');
 
+const _ = require('underscore');
+
 const handleError = require('./../helpers/handle-error.js');
 
 module.exports = app => {
 	app.get('/building', (req, res) => {
-		Building.find().exec((err, docs) => {
-			if (handleError(err, res)) {
-				res.send({
-					buildings: docs,
-					status: 'success',
-				});
-			}
+		Building.find().lean().exec((err, docs) => {
+			var queries = [];
+			_.each(docs, building => {
+				queries.push(Floor.count({
+					buildingId: building._id
+				}).then(num => {
+					building.floorNum = num;
+				}));
+			});
+
+			Promise.all(queries).then(() => {
+				if (handleError(err, res)) {
+					res.send({
+						buildings: docs,
+						status: 'success',
+					});
+				}
+			});
 		});
 	});
 

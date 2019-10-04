@@ -2,6 +2,7 @@ const Room = require('./../models/room.js');
 const Floor = require('./../models/floor.js');
 const {Switch, Light} = require('./../models/devices.js');
 const fs = require('fs');
+const _ = require('underscore');
 
 const handleError = require('./../helpers/handle-error.js');
 
@@ -136,32 +137,23 @@ module.exports = app => {
 			if (handleError(err, res)) {
 				if (req.query.devices) {
 					var queries = [];
-					for (var room of docs) {
+					_.each(docs, room => {
+						room.devices = {};
+
 						queries.push(Switch.find({
 							roomId: room._id,
+						}).then(switches => {
+							room.devices.switches = switches;
 						}));
 
 						queries.push(Light.find({
 							roomId: room._id,
+						}).then(lights => {
+							room.devices.lights = lights;
 						}));
-					}
+					});
 
-					Promise.all(queries).then(roomDevices => {
-						var deviceMapping = {};
-
-						for (var deviceIndex in roomDevices) {
-							var devices = roomDevices[deviceIndex];
-							var roomIndex = Math.floor(deviceIndex / 2);
-
-							if (!docs[roomIndex].devices) {
-								docs[roomIndex].devices = {
-									switches: devices
-								};
-							} else {
-								docs[roomIndex].devices.lights = devices;
-							}
-						}
-
+					Promise.all(queries).then(() => {
 						res.send({
 							rooms: docs,
 							status: 'success',
