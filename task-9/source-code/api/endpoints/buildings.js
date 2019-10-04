@@ -10,7 +10,7 @@ module.exports = app => {
 		Building.find().lean().exec((err, docs) => {
 			var queries = [];
 			_.each(docs, building => {
-				queries.push(Floor.count({
+				queries.push(Floor.countDocuments({
 					buildingId: building._id
 				}).then(num => {
 					building.floorNum = num;

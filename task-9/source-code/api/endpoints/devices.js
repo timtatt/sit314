@@ -4,14 +4,19 @@ const handleError = require('./../helpers/handle-error.js');
 
 module.exports = app => {
 	app.get('/device', (req, res) => {
-		Switch.find().exec((err, switches) => {
-			if (handleError(err, res)) {
-				Light.find().exec((err, lights) => {
-					if (handleError(err, res)) {
-						res.send({lights, switches});
-					}
-				});
-			}
+		queries.push(Switch.find(params).exec((err, switches) => {
+			handleError(err, res);
+		}));
+
+		queries.push(Light.find(params).exec((err, lights) => {
+			handleError(err, res);
+		}));
+
+		Promise.all(queries).then(docs => {
+			res.send({
+				switches: docs[0],
+				lights: docs[1],
+			});
 		});
 	});
 

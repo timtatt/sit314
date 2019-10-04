@@ -7,6 +7,7 @@ const _ = require('underscore');
 const fileUpload = require('express-fileupload');
 
 const app = express();
+const mqtt = require('./mqtt.js');
 const port = 3000;
 
 const mongoose = require('mongoose');
@@ -17,6 +18,7 @@ const apiKeys = {
 	},
 };
 
+mqtt();
 app.use(cors());
 app.use(mongoSanitize());
 app.use(helmet());
